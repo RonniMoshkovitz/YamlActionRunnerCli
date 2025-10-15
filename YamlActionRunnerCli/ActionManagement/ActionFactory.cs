@@ -16,6 +16,7 @@ public class ActionFactory
         [ActionType.SetVariable] = typeof(SetVariableAction),
         [ActionType.PrintVariable] = typeof(PrintVariableAction),
         [ActionType.Retry] =  typeof(RetryAction),
+        [ActionType.Parallel] = typeof(ParallelAction),
     };
 
     public IAction Create(Step step)

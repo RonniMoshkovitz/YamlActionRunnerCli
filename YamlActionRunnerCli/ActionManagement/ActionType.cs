@@ -8,5 +8,6 @@ public enum ActionType
     Http,
     SetVariable,
     PrintVariable,
-    Retry
+    Retry,
+    Parallel
 }
