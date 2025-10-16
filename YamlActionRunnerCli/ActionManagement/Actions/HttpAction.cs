@@ -14,9 +14,8 @@ public class HttpAction: IAction
     public string? Method {get; set;}
     [Required]
     public string? Url {get; set;}
-    [Required]
-    public string? Body {get; set;}
-    public string? UserAgent { get; set; }
+    public string Body {get; set;} = string.Empty;
+    public string UserAgent { get; set; } = USER_AGENT;
 
     public HttpAction()
     {
@@ -33,7 +32,7 @@ public class HttpAction: IAction
     {
         using var client = new HttpClient();
         
-        client.DefaultRequestHeaders.UserAgent.ParseAdd(UserAgent ?? USER_AGENT);
+        client.DefaultRequestHeaders.UserAgent.ParseAdd(UserAgent);
 
         var response = GetRequestMethod()(client).GetAwaiter().GetResult();
         EnsureSuccess(response);
@@ -65,7 +64,7 @@ public class HttpAction: IAction
     
     private async Task<HttpResponseMessage> Post(HttpClient client)
     {
-        var content = new StringContent(Body ?? "", Encoding.UTF8, MEDIA_TYPE);
+        var content = new StringContent(Body, Encoding.UTF8, MEDIA_TYPE);
         return await client.PostAsync(Url, content);
     }
 }
