@@ -21,7 +21,7 @@ public class ActionFactory
 
     public IAction Create(Step step)
     {
-        var actionObjectType = GetActionObjectType(step.ActionType!.Value);
+        var actionObjectType = GetActionObjectType(step.Action!.Value);
         if (actionObjectType.IsSubclassOf(typeof(NestedAction)) &&
             step.Parameters!.TryGetValue("steps", out var nestedSteps))
         {
