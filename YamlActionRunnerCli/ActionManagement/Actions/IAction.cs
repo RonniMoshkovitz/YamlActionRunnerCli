@@ -4,5 +4,5 @@ namespace YamlActionRunnerCli.ActionManagement.Actions;
 
 public interface IAction
 {
-    void Run(Scope  scope);
+    void Run(Scope scope);
 }
