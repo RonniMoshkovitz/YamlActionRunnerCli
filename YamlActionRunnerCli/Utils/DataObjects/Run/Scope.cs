@@ -5,6 +5,6 @@ namespace YamlActionRunnerCli.Utils.DataObjects.Run;
 
 public record Scope
 {
-    public ConcurrentDictionary<string, object?> Variables {get; set;}
+    public Variables Variables { get; set; }
     public ILogger Logger {get; set;}
 }
