@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Text;
+using YamlActionRunnerCli.Exceptions.ActionExceptions;
 using YamlActionRunnerCli.Utils.DataObjects.Run;
 
 namespace YamlActionRunnerCli.ActionManagement.Actions;
@@ -8,11 +9,12 @@ public class HttpAction: IAction
 {
     private const string MEDIA_TYPE = "application/json";
     private const string USER_AGENT = "YamlRunner/1.0";
+    
     private readonly Dictionary<string, Func<HttpClient, Task<HttpResponseMessage>>> _requestMethods;
     
     [Required]
     public string? Method {get; set;}
-    [Required]
+    [Required, Url]
     public string? Url {get; set;}
     public string Body {get; set;} = string.Empty;
     public string UserAgent { get; set; } = USER_AGENT;
@@ -26,9 +28,7 @@ public class HttpAction: IAction
         };
     }
 
-    public void Run(Scope scope) => ExecuteAsync(scope).GetAwaiter().GetResult();
-
-    private async Task ExecuteAsync(Scope scope)
+    public void Run(Scope scope)
     {
         using var client = new HttpClient();
         
@@ -37,7 +37,7 @@ public class HttpAction: IAction
         var response = GetRequestMethod()(client).GetAwaiter().GetResult();
         EnsureSuccess(response);
         
-        var logAction = new LogAction {Message = await response.Content.ReadAsStringAsync()};
+        var logAction = new LogAction {Message = response.Content.ReadAsStringAsync().Result};
         logAction.Run(scope);
     }
 
@@ -45,7 +45,7 @@ public class HttpAction: IAction
     {
         if (!response.IsSuccessStatusCode)
         {
-            throw new HttpRequestException($"Request failed ({(int)response.StatusCode} {response.ReasonPhrase})");
+            throw new FailedHttpRequest((int)response.StatusCode, response.ReasonPhrase ?? "");
         }
     }
 
@@ -53,7 +53,7 @@ public class HttpAction: IAction
     {
         var methodUpper = Method!.Trim().ToUpperInvariant();
         if (!_requestMethods.TryGetValue(methodUpper, out var requestMethod))
-            throw new InvalidOperationException($"Unsupported HTTP method: {Method}");
+            throw new UnsupportedHttpMethod(Method);
         return requestMethod;
     }
 
