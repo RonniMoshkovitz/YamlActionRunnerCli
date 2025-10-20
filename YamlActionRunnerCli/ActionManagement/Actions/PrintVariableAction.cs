@@ -10,6 +10,6 @@ public class PrintVariableAction : IAction
     
     public void Run(Scope scope)
     {
-        scope.Logger.Information($"{Name} = {scope.Variables[Name!]}");
+        scope.Logger.Information("{S} = {ScopeVariable}", Name, scope.Variables[Name!]);
     }
 }
