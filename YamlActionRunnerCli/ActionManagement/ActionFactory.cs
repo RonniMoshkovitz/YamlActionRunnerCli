@@ -8,7 +8,7 @@ public class ActionFactory
     private static readonly string _stepsKey = nameof(Instructions.Steps).ToLower();
     private static readonly string _actionsKey = nameof(NestedAction.Actions).ToLower();
     
-    private readonly ActionBuilder _actionBuilder = new ActionBuilder();
+    private readonly ActionBuilder _actionBuilder = new();
 
     private static readonly Dictionary<ActionType, Type> _actionTypes = new()
     {
@@ -20,6 +20,8 @@ public class ActionFactory
         [ActionType.PrintVariable] = typeof(PrintVariableAction),
         [ActionType.Retry] =  typeof(RetryAction),
         [ActionType.Parallel] = typeof(ParallelAction),
+        [ActionType.Condition] = typeof(ConditionAction),
+        [ActionType.Shell] = typeof(ShellAction)
     };
 
     public IAction GetAction(Step step)

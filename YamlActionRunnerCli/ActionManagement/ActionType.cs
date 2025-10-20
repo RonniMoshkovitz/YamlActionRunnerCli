@@ -9,5 +9,7 @@ public enum ActionType
     SetVariable,
     PrintVariable,
     Retry,
-    Parallel
+    Parallel,
+    Condition,
+    Shell
 }
