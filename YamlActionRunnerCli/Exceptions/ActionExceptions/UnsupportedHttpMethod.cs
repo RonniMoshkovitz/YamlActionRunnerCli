@@ -1,5 +1,10 @@
-﻿namespace YamlActionRunnerCli.Exceptions.ActionExceptions;
+﻿using YamlActionRunnerCli.ActionManagement.Actions;
 
-public class UnsupportedHttpMethod(string method) : ActionException("Unsupported HTTP method: {0}", method)
+namespace YamlActionRunnerCli.Exceptions.ActionExceptions;
+
+public class UnsupportedHttpMethod : ActionFailedException
 {
+    public UnsupportedHttpMethod(IAction action, string method) : base(action, $"Unsupported HTTP method: '{method}'")
+    {
+    }
 }

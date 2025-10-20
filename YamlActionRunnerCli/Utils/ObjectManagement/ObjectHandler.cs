@@ -38,4 +38,13 @@ public static class ObjectHandler
                 $"Invalid members for {typeof(TObject)}: {string.Join("\n ", results.Select(r => r.ErrorMessage))}");
         }
     }
+    
+    public static string GetPropertiesDescription(this object instance)
+    {
+        var type = instance.GetType();
+        var properties = type.GetProperties().Select(p => $"{p.Name}={p.GetValue(instance)}");
+        
+        return $"{type.Name}: {string.Join(", ", properties)}";
+    }
+
 }

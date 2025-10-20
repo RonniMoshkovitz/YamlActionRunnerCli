@@ -15,13 +15,14 @@ public class AssertAction: IAction
     {
         try
         {
-            var result = CSharpScript.EvaluateAsync<bool>(Condition, ScriptOptions.Default).Result;
-            if (!result)
-                throw new FailedAssertionException(Condition!);
+            if (!IsConditionTrue())
+                throw new FailedAssertionException(this, Condition!);
         }
         catch (CompilationErrorException)
         {
-            throw new InvalidConditionException(Condition!);
+            throw new InvalidConditionException(this, Condition!);
         }    
     }
+
+    private bool IsConditionTrue() => CSharpScript.EvaluateAsync<bool>(Condition, ScriptOptions.Default).Result;
 }

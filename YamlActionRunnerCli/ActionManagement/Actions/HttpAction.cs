@@ -11,7 +11,7 @@ public class HttpAction: IAction
     private const string USER_AGENT = "YamlRunner/1.0";
     
     private readonly Dictionary<string, Func<HttpClient, Task<HttpResponseMessage>>> _requestMethods;
-    
+
     [Required]
     public string? Method {get; set;}
     [Required, Url]
@@ -41,11 +41,11 @@ public class HttpAction: IAction
         logAction.Run(scope);
     }
 
-    private static void EnsureSuccess(HttpResponseMessage response)
+    private void EnsureSuccess(HttpResponseMessage response)
     {
         if (!response.IsSuccessStatusCode)
         {
-            throw new FailedHttpRequest((int)response.StatusCode, response.ReasonPhrase ?? "");
+            throw new FailedHttpRequest(this, (int)response.StatusCode, response.ReasonPhrase ?? "");
         }
     }
 
@@ -53,7 +53,7 @@ public class HttpAction: IAction
     {
         var methodUpper = Method!.Trim().ToUpperInvariant();
         if (!_requestMethods.TryGetValue(methodUpper, out var requestMethod))
-            throw new UnsupportedHttpMethod(Method);
+            throw new UnsupportedHttpMethod(this, Method);
         return requestMethod;
     }
 

@@ -1,8 +1,13 @@
-﻿namespace YamlActionRunnerCli.Exceptions.ActionExceptions;
+﻿using YamlActionRunnerCli.ActionManagement.Actions;
+
+namespace YamlActionRunnerCli.Exceptions.ActionExceptions;
 
 using System;
 
-public class FailedAssertionException(string condition) : ActionException("Assertion failed: '{0}' is false", condition)
+public class FailedAssertionException : ActionFailedException
 {
-    
+    public FailedAssertionException(IAction action, string condition) 
+        : base(action, $"Assertion failed: '{condition}' is false")
+    {
+    }
 }

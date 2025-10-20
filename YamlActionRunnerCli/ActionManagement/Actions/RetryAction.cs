@@ -1,29 +1,46 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using YamlActionRunnerCli.Exceptions.ActionExceptions;
 using YamlActionRunnerCli.Utils.DataObjects.Run;
 
 namespace YamlActionRunnerCli.ActionManagement.Actions;
 
 public class RetryAction : NestedAction
 {
-    [Required]
+    [Required, Range(1, int.MaxValue)]
     public int? Times { get; set; }
-    
+
     public override void Run(Scope scope)
     {
-        foreach (var action in Actions)
+        Actions!.ToList().ForEach(action => RunActionWithRetries(action, scope));
+    }
+
+    private void RunActionWithRetries(IAction action, Scope scope)
+    {
+        ActionFailedException? failReasonException = null;
+        
+        for (int i = 0; i < Times; i++)
         {
-            for (int i = 0; i < Times; i++)
-            {
-                try
-                {
-                    action.Run(scope);
-                    break;
-                }
-                catch (Exception)
-                {
-                    if (i == Times - 1) throw;
-                }
-            }
+            if (TryRunAction(action, scope, out failReasonException)) return;
         }
+
+        if (failReasonException is not null)
+            throw new RetryFailed(this, Times!.Value, failReasonException);
+    }
+    
+    private static bool TryRunAction(IAction action, Scope scope, out ActionFailedException? failReasonException)
+    {
+        failReasonException = null;
+        
+        try
+        {
+            action.Run(scope);
+        }
+        catch (ActionFailedException a)
+        {
+            failReasonException = a;
+            return false;
+        }
+
+        return true;
     }
 }
