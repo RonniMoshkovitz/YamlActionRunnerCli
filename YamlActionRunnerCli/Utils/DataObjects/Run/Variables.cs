@@ -6,7 +6,7 @@ namespace YamlActionRunnerCli.Utils.DataObjects.Run;
 public class Variables(string variablesRegexPattern)
 {
     private readonly Regex _variablesPattern = new(variablesRegexPattern, RegexOptions.Compiled);
-    private ConcurrentDictionary<string, object?> _variables = new();
+    private readonly ConcurrentDictionary<string, object?> _variables = new();
 
     public object? this[string name]
     {
@@ -21,14 +21,13 @@ public class Variables(string variablesRegexPattern)
     
     public string PlaceVariablesInData(string data) => string.IsNullOrEmpty(data) ? data : ReplaceVariables(data);
 
-    private string ReplaceVariables(string text) =>
-        _variablesPattern.Replace(text, match => ResolveVariable(match, _variables));
+    private string ReplaceVariables(string text) => _variablesPattern.Replace(text, ResolveVariable);
 
-    private static string ResolveVariable(Match match, IDictionary<string, object?> variables)
+    private string ResolveVariable(Match match)
     {
         var key = match.Groups[1].Value;
 
-        if (variables.TryGetValue(key, out var value))
+        if (_variables.TryGetValue(key, out var value))
             return value!.ToString() ?? string.Empty;
 
         return match.Value;

@@ -5,7 +5,7 @@ namespace YamlActionRunnerCli.Utils.ObjectManagement;
 
 public static class ObjectHandler
 {
-    public static object ToObjectWithProperties(this Dictionary<string, object> properties, Type objectType)
+    public static object ToObjectWithProperties(this IDictionary<string, object> properties, Type objectType)
     {
         var instance = Activator.CreateInstance(objectType)!;
         
@@ -15,11 +15,11 @@ public static class ObjectHandler
         return instance;
     }
 
-    public static void PlaceProperties(this object instance, Dictionary<string, object> properties)
+    public static void PlaceProperties(this object instance, IDictionary<string, object> properties)
     {
         var normalized = properties.ToDictionary(kv => kv.Key.ToLower(), kv => kv.Value);
         
-        foreach (var prop in instance!.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance))
+        foreach (var prop in instance.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance))
         {
             if (normalized.TryGetValue(prop.Name.ToLower(), out var value))
             {
