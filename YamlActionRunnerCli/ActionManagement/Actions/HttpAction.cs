@@ -37,8 +37,7 @@ public class HttpAction: IAction
         var response = GetRequestMethod()(client).GetAwaiter().GetResult();
         EnsureSuccess(response);
         
-        var logAction = new LogAction {Message = response.Content.ReadAsStringAsync().Result};
-        logAction.Run(scope);
+        scope.Logger.Information("HTTP Response: {response}",response.Content.ReadAsStringAsync().Result);
     }
 
     private void EnsureSuccess(HttpResponseMessage response)
