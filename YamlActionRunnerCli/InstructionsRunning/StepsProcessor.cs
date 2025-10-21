@@ -5,11 +5,16 @@ using YamlActionRunnerCli.Utils.DataObjects.Run;
 
 namespace YamlActionRunnerCli.InstructionsRunning;
 
-public class StepsProcessor(Scope scope)
+public class StepsProcessor
 {
     private ActionFactory _actionFactory = new();
-    private Scope _scope = scope;
+    private Scope _scope;
 
+    public StepsProcessor(Scope scope)
+    {
+        _scope = scope;
+    }
+    
     public IEnumerable<IAction> ProcessSteps(IEnumerable<Step> steps)
     {
         foreach (var step in steps)
