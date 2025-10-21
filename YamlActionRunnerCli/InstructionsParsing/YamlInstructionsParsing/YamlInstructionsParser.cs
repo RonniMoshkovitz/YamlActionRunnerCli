@@ -63,7 +63,7 @@ public class YamlInstructionsParser : YamlDataParser<Instructions>
 
         if (TryParseSteps(stepNode[new YamlScalarNode(_parametersKey)], out var nestedSteps))
         {
-            step.Parameters![_stepsKey] = nestedSteps;
+            step.NestedSteps = nestedSteps;
         }
         return step;
     }

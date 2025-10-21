@@ -21,6 +21,8 @@ public class StepsProcessor(Scope scope)
 
     private void ApplyScopeToStep(Step step)
     {
+        step.NestedSteps?.ToList().ForEach(ApplyScopeToStep);
+
         foreach (var (key, value) in step.Parameters!)
         {
             if (value is string stringValue)

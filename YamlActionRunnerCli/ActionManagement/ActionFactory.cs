@@ -5,7 +5,6 @@ namespace YamlActionRunnerCli.ActionManagement;
 
 public class ActionFactory
 {
-    private static readonly string _stepsKey = nameof(Instructions.Steps).ToLower();
     private static readonly string _actionsKey = nameof(NestedAction.Actions).ToLower();
     
     private readonly ActionBuilder _actionBuilder = new();
@@ -27,10 +26,9 @@ public class ActionFactory
     public IAction GetAction(Step step)
     {
         var actionObjectType = GetActionObjectType(step.Action!.Value);
-        if (actionObjectType.IsSubclassOf(typeof(NestedAction)) &&
-            step.Parameters!.TryGetValue(_stepsKey, out var nestedSteps))
+        if (actionObjectType.IsSubclassOf(typeof(NestedAction)) && step.NestedSteps is not null)
         {
-            step.Parameters[_actionsKey] = (from nestedStep in nestedSteps as List<Step> select GetAction(nestedStep)).ToList();
+            step.Parameters![_actionsKey] = (from nestedStep in step.NestedSteps as List<Step> select GetAction(nestedStep)).ToList();
         }
 
         return _actionBuilder.BuildAction(actionObjectType, step.Parameters!);

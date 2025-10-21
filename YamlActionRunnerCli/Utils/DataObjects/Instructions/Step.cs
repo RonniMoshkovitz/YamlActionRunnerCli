@@ -10,4 +10,6 @@ public record Step
     public ActionType? Action { get; set; }
     [Required]
     public Dictionary<string, object>? Parameters { get; set; }
+    
+    public IList<Step>? NestedSteps { get; set; }
 }
