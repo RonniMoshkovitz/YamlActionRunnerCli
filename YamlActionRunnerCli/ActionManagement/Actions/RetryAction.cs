@@ -11,6 +11,8 @@ public class RetryAction : NestedAction
 
     public override void Run(Scope scope)
     {
+        scope.Logger.Verbose("Trying to run {count} actions: {@actions}", Actions!.Count, Actions!.Select(a => a.GetType().Name));
+
         Actions!.ToList().ForEach(action => RunActionWithRetries(action, scope));
     }
 
@@ -18,9 +20,14 @@ public class RetryAction : NestedAction
     {
         ActionFailedException? failReasonException = null;
         
-        for (int i = 0; i < Times; i++)
+        for (int i = 1; i <= Times; i++)
         {
-            if (TryRunAction(action, scope, out failReasonException)) return;
+            if (TryRunAction(action, scope, out failReasonException))
+            {
+                scope.Logger.Verbose("{actions} complete on attempt {attempt}", action.GetType().Name, i);
+                return;
+            }
+            scope.Logger.Verbose("{actions} failed on attempt {attempt}", action.GetType().Name, i);
         }
 
         if (failReasonException is not null)

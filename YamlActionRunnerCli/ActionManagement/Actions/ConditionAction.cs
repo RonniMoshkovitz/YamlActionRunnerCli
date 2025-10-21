@@ -11,7 +11,10 @@ public class ConditionAction : NestedAction
     public override void Run(Scope scope)
     {
         if (IsConditionTrue(scope))
+        {
+            scope.Logger.Verbose("Running {count} actions: {@actions}", Actions!.Count, Actions!.Select(a => a.GetType().Name));
             Actions!.ToList().ForEach(action => action.Run(scope));
+        }
     }
 
     private bool IsConditionTrue(Scope scope)
@@ -22,6 +25,7 @@ public class ConditionAction : NestedAction
         }
         catch (FailedAssertionException)
         {
+            scope.Logger.Verbose("Condition {Condition}' is false", Condition);
             return false;
         }
 

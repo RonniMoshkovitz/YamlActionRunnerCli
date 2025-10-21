@@ -10,6 +10,8 @@ public class DelayAction : IAction
 
     public void Run(Scope scope)
     {
+        scope.Logger.Verbose("Starting delay for {duration}Ms", Duration);
         Thread.Sleep(Duration!.Value);
+        scope.Logger.Verbose("Finished delay for {duration}Ms", Duration);
     }
 }

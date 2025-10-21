@@ -19,8 +19,16 @@ public class ShellAction : IAction
         using var process = GetProcess(Command!);
 
         SetProcessRuntimeLogging(process, scope);
-        RunProcess(process);
         
+        scope.Logger.Verbose("Starting to run shell command '{command}'", Command);
+        RunProcess(process);
+
+        ValidateProcessSuccess(process);
+        scope.Logger.Verbose("Shell command finished successfully");
+    }
+
+    private void ValidateProcessSuccess(Process process)
+    {
         if (process.ExitCode != 0)
             throw new ShellCommandFailedException(this, process.ExitCode);
     }
