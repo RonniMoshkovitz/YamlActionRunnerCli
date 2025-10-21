@@ -5,8 +5,10 @@ namespace YamlActionRunnerCli.Exceptions.ActionExceptions;
 
 public abstract class ActionFailedException : Exception
 {
-    public ActionFailedException(IAction action, string message) : base(
-        $"Action ({action.GetPropertiesDescription()}) Failed - {message}")
+    public IAction FailedAction { get;}
+
+    public ActionFailedException(IAction action, string message) : base($"Action Failed - {message}")
     {
+        FailedAction = action;
     }
 }
