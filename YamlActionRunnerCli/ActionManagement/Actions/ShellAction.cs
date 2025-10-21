@@ -20,7 +20,7 @@ public class ShellAction : IAction
 
         SetProcessRuntimeLogging(process, scope);
         
-        scope.Logger.Verbose("Starting to run shell command '{command}'", Command);
+        scope.Logger!.Verbose("Starting to run shell command '{command}'", Command);
         RunProcess(process);
 
         ValidateProcessSuccess(process);
@@ -61,7 +61,7 @@ public class ShellAction : IAction
     private static void LogRuntimeEvent(DataReceivedEventArgs eventArgs, Scope scope)
     {
         if (!string.IsNullOrEmpty(eventArgs.Data))
-            scope.Logger.Information(SHELL_LOG_FORMAT, eventArgs.Data);
+            scope.Logger!.Information(SHELL_LOG_FORMAT, eventArgs.Data);
     }
 
     private static void RunProcess(Process process)

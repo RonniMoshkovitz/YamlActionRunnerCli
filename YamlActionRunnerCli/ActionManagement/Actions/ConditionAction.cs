@@ -6,13 +6,15 @@ namespace YamlActionRunnerCli.ActionManagement.Actions;
 
 public class ConditionAction : NestedAction
 {
-    [Required] public string? Condition { get; set; }
+    [Required]
+    public string? Condition { get; set; }
 
     public override void Run(Scope scope)
     {
         if (IsConditionTrue(scope))
         {
-            scope.Logger.Verbose("Running {count} actions: {@actions}", Actions!.Count, Actions!.Select(a => a.GetType().Name));
+            scope.Logger!.Verbose("Running {count} actions: {@actions}", Actions!.Count,
+                Actions!.Select(action => action.GetType().Name));
             Actions!.ToList().ForEach(action => action.Run(scope));
         }
     }
@@ -25,7 +27,7 @@ public class ConditionAction : NestedAction
         }
         catch (FailedAssertionException)
         {
-            scope.Logger.Verbose("Condition {Condition}' is false", Condition);
+            scope.Logger!.Verbose("Condition {Condition}' is false", Condition);
             return false;
         }
 

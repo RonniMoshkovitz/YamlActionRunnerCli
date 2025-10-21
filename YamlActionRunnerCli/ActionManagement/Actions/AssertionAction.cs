@@ -15,7 +15,7 @@ public class AssertAction: IAction
     {
         try
         {
-            scope.Logger.Verbose("Evaluating condition '{Condition}'", Condition);
+            scope.Logger!.Verbose("Evaluating condition '{Condition}'", Condition);
             if (!IsConditionTrue())
                 throw new FailedAssertionException(this, Condition!);
             scope.Logger.Verbose("Condition '{Condition}' is true", Condition);

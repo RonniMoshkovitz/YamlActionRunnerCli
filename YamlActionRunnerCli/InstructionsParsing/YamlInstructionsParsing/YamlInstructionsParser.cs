@@ -15,25 +15,24 @@ public class YamlInstructionsParser : YamlDataParser<Instructions>
     {
         var root = GetRootNode(filePath);
 
-        if (!TryParseSteps(root, out var steps))
+        if (root is null || !TryParseSteps(root, out var steps))
             throw new InvalidDataException("YAML content couldn't be parsed, no 'steps' found.");
         
         return new Instructions{Steps = steps};
     }
 
-    private static YamlMappingNode GetRootNode(string filePath)
+    private static YamlMappingNode? GetRootNode(string filePath)
     {
-        var yaml = File.ReadAllText(filePath);
         var yamlStream = new YamlStream();
-        yamlStream.Load(new StringReader(yaml));
-
-        return (YamlMappingNode)yamlStream.Documents[0].RootNode;
+        yamlStream.Load(new StringReader(File.ReadAllText(filePath)));
+        
+        return (YamlMappingNode?)yamlStream.Documents.FirstOrDefault()?.RootNode;
     }
 
 
-    private bool TryParseSteps(YamlNode node, out List<Step> steps)
+    private bool TryParseSteps(YamlNode node, out IList<Step> steps)
     {
-        steps = new();
+        steps = new List<Step>();
         
         if (!TryGetStepsNode(node, out var stepsNode))
             return false;
@@ -62,9 +61,8 @@ public class YamlInstructionsParser : YamlDataParser<Instructions>
         step.ValidateMembers();
 
         if (TryParseSteps(stepNode[new YamlScalarNode(_parametersKey)], out var nestedSteps))
-        {
             step.NestedSteps = nestedSteps;
-        }
+
         return step;
     }
 }

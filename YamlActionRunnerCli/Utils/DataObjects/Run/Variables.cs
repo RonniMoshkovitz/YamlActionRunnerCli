@@ -3,9 +3,9 @@ using System.Text.RegularExpressions;
 
 namespace YamlActionRunnerCli.Utils.DataObjects.Run;
 
-public class Variables(string variablesRegexPattern)
+public class Variables
 {
-    private readonly Regex _variablesPattern = new(variablesRegexPattern, RegexOptions.Compiled);
+    private readonly Regex _variablesPattern;
     private readonly ConcurrentDictionary<string, object?> _variables = new();
 
     public object? this[string name]
@@ -17,6 +17,11 @@ public class Variables(string variablesRegexPattern)
             return value;
         }
         set => _variables[name] = value;
+    }
+
+    public Variables(string variablesRegexPattern)
+    {
+        _variablesPattern = new(variablesRegexPattern, RegexOptions.Compiled);
     }
     
     public string PlaceVariablesInData(string data) => string.IsNullOrEmpty(data) ? data : ReplaceVariables(data);

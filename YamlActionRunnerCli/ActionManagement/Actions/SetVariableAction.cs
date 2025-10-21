@@ -12,7 +12,7 @@ public class SetVariableAction : IAction
     
     public void Run(Scope scope)
     {
-        scope.Logger.Verbose("Setting value for variable '{name}' = {value}", Name, Value);
-        scope.Variables[Name!] = Value;
+        scope.Logger!.Verbose("Setting value for variable '{name}' = {value}", Name, Value);
+        scope.Variables![Name!] = Value;
     }
 }

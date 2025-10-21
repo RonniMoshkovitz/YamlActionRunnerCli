@@ -10,7 +10,7 @@ public class PrintVariableAction : IAction
     
     public void Run(Scope scope)
     {
-        scope.Logger.Verbose("Logging variable named '{name}'", Name);
-        scope.Logger.Information("{S} = {ScopeVariable}", Name, scope.Variables[Name!]);
+        scope.Logger!.Verbose("Logging variable named '{name}'", Name);
+        scope.Logger.Information("{S} = {ScopeVariable}", Name, scope.Variables![Name!]);
     }
 }

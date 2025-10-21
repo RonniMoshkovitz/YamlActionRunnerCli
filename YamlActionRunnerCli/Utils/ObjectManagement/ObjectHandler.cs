@@ -35,14 +35,14 @@ public static class ObjectHandler
         if (!Validator.TryValidateObject(objectToValidate!, context, results, validateAllProperties: true))
         {
             throw new ValidationException(
-                $"Invalid members for {typeof(TObject)}: {string.Join("\n ", results.Select(r => r.ErrorMessage))}");
+                $"Invalid members for {typeof(TObject)}: {string.Join("\n ", results.Select(result => result.ErrorMessage))}");
         }
     }
     
     public static string GetPropertiesDescription(this object instance)
     {
         var type = instance.GetType();
-        var properties = type.GetProperties().Select(p => $"{p.Name}={p.GetValue(instance)}");
+        var properties = type.GetProperties().Select(property => $"{property.Name}={property.GetValue(instance)}");
         
         return $"{type.Name}: {string.Join(", ", properties)}";
     }

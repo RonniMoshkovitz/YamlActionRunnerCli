@@ -33,7 +33,7 @@ public class HttpAction : IAction
         var client = new HttpClient();
         var request = _requestsGetters[Method!.Value]();
         
-        scope.Logger.Verbose("Sending {method:G} HTTP Request to {url})", Method, request.RequestUri);
+        scope.Logger!.Verbose("Sending {method:G} HTTP Request to {url})", Method, request.RequestUri);
         var response = SendRequestAndGetResponse(request, client);
         
         EnsureSuccess(response);
