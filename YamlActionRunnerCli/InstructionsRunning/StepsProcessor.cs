@@ -32,7 +32,7 @@ public class StepsProcessor
         {
             if (value is string stringValue)
             {
-                step.Parameters[key] = _scope.Variables.PlaceVariablesInData(stringValue);
+                step.Parameters[key] = _scope.Variables!.PlaceVariablesInData(stringValue);
             }
         }
     }

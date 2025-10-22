@@ -22,15 +22,15 @@ public class InstructionsRunner
     
     public void Run(Instructions instructions)
     {
-        foreach (var action in _stepsProcessor.ProcessSteps(instructions.Steps))
+        foreach (var action in _stepsProcessor.ProcessSteps(instructions.Steps!))
         {
-            _scope.Logger.Verbose("Starting {type} step", nameof(action.GetType));
+            _scope.Logger!.Verbose("Starting {type} step", nameof(action.GetType));
             action.Run(_scope);
         }
     }
 
     public void DryRun(Instructions instructions)
     {
-        _scope.Logger.Information("\n{instruction}",_serializer.Serialize(instructions));
+        _scope.Logger!.Information("\n{instruction}",_serializer.Serialize(instructions));
     }
 }
