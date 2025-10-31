@@ -3,7 +3,7 @@ using YamlActionRunnerCli.ActionManagement.Actions;
 using YamlActionRunnerCli.Utils.DataObjects.Instructions;
 using YamlActionRunnerCli.Utils.DataObjects.Run;
 
-namespace YamlActionRunnerCli.InstructionsRunning;
+namespace YamlActionRunnerCli.InstructionsRunning.Run;
 
 public class StepsProcessor
 {

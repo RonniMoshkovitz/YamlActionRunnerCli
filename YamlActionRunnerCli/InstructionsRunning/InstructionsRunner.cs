@@ -1,4 +1,6 @@
-﻿using YamlActionRunnerCli.Utils.DataObjects.Instructions;
+﻿using YamlActionRunnerCli.InstructionsRunning.DryRun;
+using YamlActionRunnerCli.InstructionsRunning.Run;
+using YamlActionRunnerCli.Utils.DataObjects.Instructions;
 using YamlActionRunnerCli.Utils.DataObjects.Run;
 using YamlDotNet.Serialization;
 using YamlDotNet.Serialization.NamingConventions;
@@ -10,10 +12,6 @@ public class InstructionsRunner
     private readonly Scope _scope;
     private readonly StepsProcessor _stepsProcessor;
     
-    private readonly ISerializer _serializer = new SerializerBuilder()
-        .WithNamingConvention(CamelCaseNamingConvention.Instance)
-        .Build();
-
     public InstructionsRunner(Scope scope)
     {
         _scope = scope;
@@ -24,13 +22,13 @@ public class InstructionsRunner
     {
         foreach (var action in _stepsProcessor.ProcessSteps(instructions.Steps!))
         {
-            _scope.Logger!.Verbose("Starting {type} step", nameof(action.GetType));
+            _scope.Logger!.Verbose("Starting {type} step", action.GetType().Name);
             action.Run(_scope);
         }
     }
 
     public void DryRun(Instructions instructions)
     {
-        _scope.Logger!.Information("\n{instruction}",_serializer.Serialize(instructions));
+        _scope.Logger!.Information("\n{instruction}", instructions.GetStructure());
     }
 }
