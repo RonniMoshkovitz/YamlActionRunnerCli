@@ -1,4 +1,6 @@
-﻿namespace YamlActionRunnerCli.Utils.ObjectManagement;
+﻿using YamlActionRunnerCli.Exceptions.GeneralExceptions;
+
+namespace YamlActionRunnerCli.Utils.ObjectManagement;
 
 public static class ValueConverter
 {
@@ -26,7 +28,7 @@ public static class ValueConverter
         }
         catch
         {
-            throw new FormatException($"Cannot convert '{value}' to enum {enumType.Name}");
+            throw new InvalidConfigurationException(enumType,[$"Cannot convert '{value}' to enum {enumType.Name}"]);
         }
     }
 
@@ -38,7 +40,7 @@ public static class ValueConverter
         }
         catch (Exception exception) when (exception is FormatException or InvalidCastException or OverflowException)
         {
-            throw new FormatException($"Cannot convert '{value}' to type {targetType.Name}", exception);
+            throw new InvalidConfigurationException(targetType, [$"Cannot convert '{value}' to type {targetType.Name}"]);
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Reflection;
+using YamlActionRunnerCli.Exceptions.GeneralExceptions;
 
 namespace YamlActionRunnerCli.Utils.ObjectManagement;
 
@@ -15,7 +16,7 @@ public static class ObjectHandler
         return instance;
     }
 
-    public static void PlaceProperties(this object instance, IDictionary<string, object> properties)
+    private static void PlaceProperties(this object instance, IDictionary<string, object> properties)
     {
         var normalized = properties.ToDictionary(kv => kv.Key.ToLower(), kv => kv.Value);
         
@@ -27,24 +28,15 @@ public static class ObjectHandler
             }
         }
     }
-    public static void ValidateMembers<TObject>(this TObject objectToValidate) where TObject : new()
+
+    private static void ValidateMembers<TObject>(this TObject objectToValidate) where TObject : new()
     {
-        var results = new List<ValidationResult>();
+        List<ValidationResult> results = [];
         var context = new ValidationContext(objectToValidate!);
 
         if (!Validator.TryValidateObject(objectToValidate!, context, results, validateAllProperties: true))
         {
-            throw new ValidationException(
-                $"Invalid members for {typeof(TObject)}: {string.Join("\n ", results.Select(result => result.ErrorMessage))}");
+            throw new InvalidConfigurationException(objectToValidate!.GetType(), results.Select(result => result.ErrorMessage));
         }
     }
-    
-    public static string GetPropertiesDescription(this object instance)
-    {
-        var type = instance.GetType();
-        var properties = type.GetProperties().Select(property => $"{property.Name}={property.GetValue(instance)}");
-        
-        return $"{type.Name}: {string.Join(", ", properties)}";
-    }
-
 }
