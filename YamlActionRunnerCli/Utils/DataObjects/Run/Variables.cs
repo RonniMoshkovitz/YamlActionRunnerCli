@@ -5,6 +5,7 @@ namespace YamlActionRunnerCli.Utils.DataObjects.Run;
 
 public class Variables
 {
+    private const string VARIABLES_DEFAULT_REGEX = @"\$\{([^}]+)\}";
     private readonly Regex _variablesPattern;
     private readonly ConcurrentDictionary<string, object?> _variables = new();
 
@@ -19,9 +20,9 @@ public class Variables
         set => _variables[name] = value;
     }
 
-    public Variables(string variablesRegexPattern)
+    public Variables(string? variablesRegexPattern=null)
     {
-        _variablesPattern = new(variablesRegexPattern, RegexOptions.Compiled);
+        _variablesPattern = new(variablesRegexPattern ?? VARIABLES_DEFAULT_REGEX, RegexOptions.Compiled);
     }
     
     public string PlaceVariablesInData(string data) => string.IsNullOrEmpty(data) ? data : ReplaceVariables(data);
