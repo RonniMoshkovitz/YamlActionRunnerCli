@@ -29,15 +29,14 @@ public class YamlInstructionsParser : YamlDataParser<Instructions>
         {
             yamlStream.Load(new StringReader(File.ReadAllText(filePath)));
         }
-        catch (Exception exception) when (exception is SemanticErrorException or YamlException)
+        catch (Exception exception) when (exception is SemanticErrorException or YamlException or FileNotFoundException)
         {
             throw new InvalidYamlException(exception.Message);
         }
 
         return (YamlMappingNode?)yamlStream.Documents.FirstOrDefault()?.RootNode;
     }
-
-
+    
     private bool TryParseSteps(YamlNode node, out IList<Step> steps)
     {
         steps = [];
