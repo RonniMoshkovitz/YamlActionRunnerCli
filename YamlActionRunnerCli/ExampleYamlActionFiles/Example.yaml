@@ -52,3 +52,6 @@
         - action: shell
           parameters: 
             command: "echo ${name}"
+  - action: import
+    parameters:
+      filePath: ExampleYamlActionFiles/ImportExample.yaml

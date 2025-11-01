@@ -11,5 +11,6 @@ public enum ActionType
     Retry,
     Parallel,
     Condition,
-    Shell
+    Shell,
+    Import
 }

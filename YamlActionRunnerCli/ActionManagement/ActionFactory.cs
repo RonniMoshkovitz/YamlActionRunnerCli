@@ -20,7 +20,8 @@ public class ActionFactory
         [ActionType.Retry] =  typeof(RetryAction),
         [ActionType.Parallel] = typeof(ParallelAction),
         [ActionType.Condition] = typeof(ConditionAction),
-        [ActionType.Shell] = typeof(ShellAction)
+        [ActionType.Shell] = typeof(ShellAction),
+        [ActionType.Import] = typeof(ImportAction)
     };
 
     public IAction GetAction(Step step)

@@ -13,9 +13,9 @@ public class RunRunner : BaseCommandRunner<RunCommand>
     private YamlInstructionsParser _instructionsParser = new();
     private InstructionsRunner _instructionsRunner;
 
-    public RunRunner()
+    public RunRunner(Scope? scope=null)
     {
-        _instructionsRunner = new(new Scope{Logger = LoggerManager.Instance.Logger});
+        _instructionsRunner = new(scope ?? new Scope{Logger = LoggerManager.Instance.Logger});
     }
 
     public override int Run(RunCommand command)
