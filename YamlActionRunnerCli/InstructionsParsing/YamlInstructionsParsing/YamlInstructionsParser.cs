@@ -29,7 +29,7 @@ public class YamlInstructionsParser : YamlDataParser<Instructions>
         {
             yamlStream.Load(new StringReader(File.ReadAllText(filePath)));
         }
-        catch (Exception exception) when (exception is SemanticErrorException or YamlException or FileNotFoundException)
+        catch (Exception exception) when (exception is SemanticErrorException or YamlException or IOException)
         {
             throw new InvalidYamlException(exception.Message);
         }

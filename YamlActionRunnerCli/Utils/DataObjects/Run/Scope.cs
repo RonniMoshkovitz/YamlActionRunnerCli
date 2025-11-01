@@ -6,8 +6,7 @@ namespace YamlActionRunnerCli.Utils.DataObjects.Run;
 
 public record Scope
 {
-    [Required]
-    public Variables? Variables { get; set; }
+    public Variables Variables { get; set; } = new();
     [Required]
     public ILogger? Logger {get; set;}
 }
