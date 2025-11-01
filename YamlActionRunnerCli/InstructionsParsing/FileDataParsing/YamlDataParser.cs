@@ -5,7 +5,7 @@ namespace YamlActionRunnerCli.InstructionsParsing.FileDataParsing;
 
 public abstract class YamlDataParser<TData> : IFileDataParser<TData>
 {
-    protected static readonly INamingConvention _namingConvention = new CamelCaseNamingConvention();
+    private static readonly INamingConvention _namingConvention = new CamelCaseNamingConvention();
 
     protected readonly IDeserializer _deserializer;
     protected readonly ISerializer _serializer;

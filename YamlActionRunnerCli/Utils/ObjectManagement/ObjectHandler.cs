@@ -1,11 +1,12 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Reflection;
+using YamlActionRunnerCli.Exceptions.GeneralExceptions;
 
 namespace YamlActionRunnerCli.Utils.ObjectManagement;
 
 public static class ObjectHandler
 {
-    public static object ToObjectWithProperties(this Dictionary<string, object> properties, Type objectType)
+    public static object ToObjectWithProperties(this IDictionary<string, object> properties, Type objectType)
     {
         var instance = Activator.CreateInstance(objectType)!;
         
@@ -15,11 +16,11 @@ public static class ObjectHandler
         return instance;
     }
 
-    public static void PlaceProperties(this object instance, Dictionary<string, object> properties)
+    private static void PlaceProperties(this object instance, IDictionary<string, object> properties)
     {
         var normalized = properties.ToDictionary(kv => kv.Key.ToLower(), kv => kv.Value);
         
-        foreach (var prop in instance!.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance))
+        foreach (var prop in instance.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance))
         {
             if (normalized.TryGetValue(prop.Name.ToLower(), out var value))
             {
@@ -27,15 +28,15 @@ public static class ObjectHandler
             }
         }
     }
-    public static void ValidateMembers<TObject>(this TObject objectToValidate) where TObject : new()
+
+    private static void ValidateMembers<TObject>(this TObject objectToValidate) where TObject : new()
     {
-        var results = new List<ValidationResult>();
+        List<ValidationResult> results = [];
         var context = new ValidationContext(objectToValidate!);
 
         if (!Validator.TryValidateObject(objectToValidate!, context, results, validateAllProperties: true))
         {
-            throw new ValidationException(
-                $"Invalid members for {typeof(TObject)}: {string.Join("\n ", results.Select(r => r.ErrorMessage))}");
+            throw new InvalidConfigurationException(objectToValidate!.GetType(), results.Select(result => result.ErrorMessage));
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using Microsoft.CodeAnalysis.CSharp.Scripting;
 using Microsoft.CodeAnalysis.Scripting;
+using YamlActionRunnerCli.Exceptions.ActionExceptions;
 using YamlActionRunnerCli.Utils.DataObjects.Run;
 
 namespace YamlActionRunnerCli.ActionManagement.Actions;
@@ -14,13 +15,16 @@ public class AssertAction: IAction
     {
         try
         {
-            var result = CSharpScript.EvaluateAsync<bool>(Condition, ScriptOptions.Default).Result;
-            if (!result)
-                throw new InvalidOperationException($"Assertion failed: {Condition} (is false)");
+            scope.Logger!.Verbose("Evaluating condition '{Condition}'", Condition);
+            if (!IsConditionTrue())
+                throw new FailedAssertionException(this, Condition!);
+            scope.Logger.Verbose("Condition '{Condition}' is true", Condition);
         }
         catch (CompilationErrorException)
         {
-            throw new InvalidOperationException($"Invalid condition '{Condition}'");
+            throw new InvalidConditionException(this, Condition!);
         }    
     }
+
+    private bool IsConditionTrue() => CSharpScript.EvaluateAsync<bool>(Condition, ScriptOptions.Default).Result;
 }

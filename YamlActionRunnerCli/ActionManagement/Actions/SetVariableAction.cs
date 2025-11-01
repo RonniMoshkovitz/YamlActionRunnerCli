@@ -3,13 +3,16 @@ using YamlActionRunnerCli.Utils.DataObjects.Run;
 
 namespace YamlActionRunnerCli.ActionManagement.Actions;
 
-public class SetVariableAction : VariableAction
+public class SetVariableAction : IAction
 {
+    [Required]
+    public string? Name { get; set; }
     [Required]
     public object? Value {get; set;}
     
-    public override void Run(Scope scope)
+    public void Run(Scope scope)
     {
-        SetVariableValueFromScope(scope, Value);
+        scope.Logger!.Verbose("Setting value for variable '{name}' = {value}", Name, Value);
+        scope.Variables![Name!] = Value;
     }
 }

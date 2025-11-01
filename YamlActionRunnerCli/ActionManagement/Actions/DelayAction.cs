@@ -5,11 +5,13 @@ namespace YamlActionRunnerCli.ActionManagement.Actions;
 
 public class DelayAction : IAction
 {
-    [Required]
+    [Required, Range(0, int.MaxValue)]
     public int? Duration { get; set; }
 
     public void Run(Scope scope)
     {
+        scope.Logger!.Verbose("Starting delay for {duration}Ms", Duration);
         Thread.Sleep(Duration!.Value);
+        scope.Logger.Verbose("Finished delay for {duration}Ms", Duration);
     }
 }

@@ -1,70 +1,73 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Text;
+using YamlActionRunnerCli.ActionManagement.Actions.Utils;
+using YamlActionRunnerCli.Exceptions.ActionExceptions;
 using YamlActionRunnerCli.Utils.DataObjects.Run;
 
 namespace YamlActionRunnerCli.ActionManagement.Actions;
 
-public class HttpAction: IAction
+public class HttpAction : IAction
 {
     private const string MEDIA_TYPE = "application/json";
-    private const string USER_AGENT = "YamlRunner/1.0";
-    private readonly Dictionary<string, Func<HttpClient, Task<HttpResponseMessage>>> _requestMethods;
-    
+    private static readonly Encoding _encoding = Encoding.UTF8;
+
+    private readonly Dictionary<HttpMethodType, Func<HttpRequestMessage>> _requestsGetters;
+
     [Required]
-    public string? Method {get; set;}
-    [Required]
-    public string? Url {get; set;}
-    public string Body {get; set;} = string.Empty;
-    public string UserAgent { get; set; } = USER_AGENT;
+    public HttpMethodType? Method { get; set; }
+    [Required, Url] 
+    public string? Url { get; set; }
+    public string Body { get; set; } = string.Empty;
 
     public HttpAction()
     {
-        _requestMethods = new()
+        _requestsGetters = new()
         {
-            ["GET"] = Get,
-            ["POST"] = Post
+            [HttpMethodType.Get] = GetGetRequest,
+            [HttpMethodType.Post] = GetPostRequest
         };
     }
 
-    public void Run(Scope scope) => ExecuteAsync(scope).GetAwaiter().GetResult();
-
-    private async Task ExecuteAsync(Scope scope)
+    public void Run(Scope scope)
     {
-        using var client = new HttpClient();
+        var client = new HttpClient();
+        var request = _requestsGetters[Method!.Value]();
         
-        client.DefaultRequestHeaders.UserAgent.ParseAdd(UserAgent);
-
-        var response = GetRequestMethod()(client).GetAwaiter().GetResult();
+        scope.Logger!.Verbose("Sending {method:G} HTTP Request to {url})", Method, request.RequestUri);
+        var response = SendRequestAndGetResponse(request, client);
+        
         EnsureSuccess(response);
-        
-        var logAction = new LogAction {Message = await response.Content.ReadAsStringAsync()};
-        logAction.Run(scope);
+        scope.Logger.Verbose("Received HTTP Response: {response}", response.Content.ReadAsStringAsync().Result);
     }
 
-    private static void EnsureSuccess(HttpResponseMessage response)
+    private HttpResponseMessage SendRequestAndGetResponse(HttpRequestMessage request, HttpClient client)
     {
-        if (!response.IsSuccessStatusCode)
+        try
         {
-            throw new HttpRequestException($"Request failed ({(int)response.StatusCode} {response.ReasonPhrase})");
+            return client.SendAsync(request).GetAwaiter().GetResult();
+        }
+        catch (HttpRequestException httpRequestException)
+        {
+            throw new FailedHttpRequest(this, httpRequestException.Message);
         }
     }
 
-    private Func<HttpClient, Task<HttpResponseMessage>> GetRequestMethod()
+    private void EnsureSuccess(HttpResponseMessage response)
     {
-        var methodUpper = Method!.Trim().ToUpperInvariant();
-        if (!_requestMethods.TryGetValue(methodUpper, out var requestMethod))
-            throw new InvalidOperationException($"Unsupported HTTP method: {Method}");
-        return requestMethod;
+        if (!response.IsSuccessStatusCode)
+            throw new FailedHttpRequest(this, response.ReasonPhrase ?? "", (int)response.StatusCode);
     }
 
-    private async Task<HttpResponseMessage> Get(HttpClient client)
+    private HttpRequestMessage GetGetRequest()
     {
-        return await client.GetAsync(Url);
+        return new HttpRequestMessage(new HttpMethod(Method!.Value.ToString()), Url);
     }
-    
-    private async Task<HttpResponseMessage> Post(HttpClient client)
+
+    private HttpRequestMessage GetPostRequest()
     {
-        var content = new StringContent(Body, Encoding.UTF8, MEDIA_TYPE);
-        return await client.PostAsync(Url, content);
+        var request = new HttpRequestMessage(new HttpMethod(Method!.Value.ToString()), Url);
+        request.Content = new StringContent(Body, _encoding, MEDIA_TYPE);
+
+        return request;
     }
 }

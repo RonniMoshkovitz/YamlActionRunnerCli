@@ -12,6 +12,7 @@ public class LogAction : IAction
 
     public void Run(Scope scope)
     {
+        scope.Logger!.Verbose("Logging message '{message}' with '{level:G}' logging level ", Message, Level);
         scope.Logger.Write(Level, Message!);
     }
 }

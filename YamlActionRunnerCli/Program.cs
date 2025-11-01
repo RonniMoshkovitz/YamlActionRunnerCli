@@ -1,3 +1,17 @@
-﻿// See https://aka.ms/new-console-template for more information
+﻿using CommandLine;
+using YamlActionRunnerCli.Cli.Commands;
+using YamlActionRunnerCli.CommandsRunners;
+using YamlActionRunnerCli.Exceptions;
+using YamlActionRunnerCli.Utils.Logging;
 
-Console.WriteLine("Hello, World!");
+namespace YamlActionRunnerCli;
+
+public static class Program
+{
+    static int Main(string[] args)
+    {
+        return Parser.Default
+            .ParseArguments<RunCommand>(args)
+            .MapResult((RunCommand runCommand) => new RunRunner().Run(runCommand), error => (int)ExitCode.InvalidArguments);
+    }
+}

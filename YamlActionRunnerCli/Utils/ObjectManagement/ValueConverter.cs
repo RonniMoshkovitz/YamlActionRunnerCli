@@ -1,10 +1,12 @@
-﻿namespace YamlActionRunnerCli.Utils.ObjectManagement;
+﻿using YamlActionRunnerCli.Exceptions.GeneralExceptions;
+
+namespace YamlActionRunnerCli.Utils.ObjectManagement;
 
 public static class ValueConverter
 {
     private static readonly Dictionary<Func<Type, bool>, Func<object, Type, object>> _typeMatchToConverters = new()
     {
-        { t => t.IsEnum, ConvertEnum }
+        { type => type.IsEnum, ConvertEnum }
     };
 
     public static object? ConvertValue(this object? value, Type targetType)
@@ -26,7 +28,7 @@ public static class ValueConverter
         }
         catch
         {
-            throw new FormatException($"Cannot convert '{value}' to enum {enumType.Name}");
+            throw new InvalidConfigurationException(enumType,[$"Cannot convert '{value}' to enum {enumType.Name}"]);
         }
     }
 
@@ -36,9 +38,9 @@ public static class ValueConverter
         {
             return Convert.ChangeType(value, targetType);
         }
-        catch (Exception ex) when (ex is FormatException or InvalidCastException or OverflowException)
+        catch (Exception exception) when (exception is FormatException or InvalidCastException or OverflowException)
         {
-            throw new FormatException($"Cannot convert '{value}' to type {targetType.Name}", ex);
+            throw new InvalidConfigurationException(targetType, [$"Cannot convert '{value}' to type {targetType.Name}"]);
         }
     }
 }

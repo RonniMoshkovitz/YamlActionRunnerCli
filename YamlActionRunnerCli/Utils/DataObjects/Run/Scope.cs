@@ -1,10 +1,12 @@
 ﻿using System.Collections.Concurrent;
+using System.ComponentModel.DataAnnotations;
 using Serilog;
 
 namespace YamlActionRunnerCli.Utils.DataObjects.Run;
 
 public record Scope
 {
-    public ConcurrentDictionary<string, object?> Variables {get; set;}
-    public ILogger Logger {get; set;}
+    public Variables Variables { get; set; } = new();
+    [Required]
+    public ILogger? Logger {get; set;}
 }
