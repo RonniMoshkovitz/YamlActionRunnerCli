@@ -4,11 +4,18 @@ using YamlActionRunnerCli.Utils.DataObjects.Run;
 
 namespace YamlActionRunnerCli.ActionManagement.Actions;
 
+/// <summary>
+/// A nested action that retries its child actions upon failure.
+/// </summary>
 public class RetryAction : NestedAction
 {
+    /// <summary>
+    /// Total number of attempts.
+    /// </summary>
     [Required, Range(1, int.MaxValue)]
     public int? Times { get; set; }
 
+    /// <inheritdoc/>
     public override void Run(Scope scope)
     {
         scope.Logger!.Verbose("Trying to run {count} actions: {@actions}", Actions!.Count,
@@ -17,6 +24,12 @@ public class RetryAction : NestedAction
         Actions!.ToList().ForEach(action => RunActionWithRetries(action, scope));
     }
 
+    /// <summary>
+    /// Tries to run a single action up to <see cref="Times"/>.
+    /// </summary>
+    /// <param name="action">Action to run</param>
+    /// <param name="scope">The shared execution scope.</param>
+    /// <exception cref="RetryFailed">Thrown if the action fails all attempts.</exception>
     private void RunActionWithRetries(IAction action, Scope scope)
     {
         ActionFailedException? failReasonException = null;
@@ -36,6 +49,13 @@ public class RetryAction : NestedAction
             throw new RetryFailed(this, Times!.Value, failReasonException);
     }
 
+    /// <summary>
+    /// Attempts to run an action once, catching any <see cref="ActionFailedException"/>.
+    /// </summary>
+    /// <param name="action">Action to run</param>
+    /// <param name="scope">The shared execution scope.</param>
+    /// <param name="failReasonException">The exception thrown while trying to run action, or null.</param>
+    /// <returns>True if successful, False if an exception was caught.</returns>
     private static bool TryRunAction(IAction action, Scope scope, out ActionFailedException? failReasonException)
     {
         failReasonException = null;

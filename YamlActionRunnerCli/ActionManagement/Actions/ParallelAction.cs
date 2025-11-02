@@ -2,8 +2,12 @@
 
 namespace YamlActionRunnerCli.ActionManagement.Actions;
 
+/// <summary>
+/// A nested action that executes all its child actions in parallel.
+/// </summary>
 public class ParallelAction : NestedAction
 {
+    /// <inheritdoc/>
     public override void Run(Scope scope)
     {
         scope.Logger!.Verbose("Starting to run {count} actions in parallel: {@actions}", Actions!.Count,
