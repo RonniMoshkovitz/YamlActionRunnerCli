@@ -8,7 +8,7 @@ using YamlActionRunnerCli.Utils.Logging;
 
 namespace YamlActionRunnerCli.CommandsRunners;
 
-public class RunRunner : BaseCommandRunner<RunCommand>
+public class RunRunner : ICommandRunner<RunCommand>
 {
     private YamlInstructionsParser _instructionsParser = new();
     private InstructionsRunner _instructionsRunner;
@@ -18,7 +18,7 @@ public class RunRunner : BaseCommandRunner<RunCommand>
         _instructionsRunner = new(scope ?? new Scope{Logger = LoggerManager.Instance.Logger});
     }
 
-    public override int Run(RunCommand command)
+    public int Run(RunCommand command)
     {
         if(command.Verbose)
             LoggerManager.Instance.LevelSwitch.MinimumLevel = LogEventLevel.Verbose;
