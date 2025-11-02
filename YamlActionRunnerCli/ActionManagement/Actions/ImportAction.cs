@@ -9,7 +9,7 @@ namespace YamlActionRunnerCli.ActionManagement.Actions;
 
 public class ImportAction : IAction
 {
-    [Required]
+    [Required, FileExtensions(Extensions = ".yaml")]
     public string FilePath { get; set; }
 
     public void Run(Scope scope)
