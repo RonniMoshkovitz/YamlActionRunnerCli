@@ -1,0 +1,23 @@
+﻿global using NUnit.Framework;
+global using Moq;
+global using Serilog; // <-- ADDED THIS
+global using YamlActionRunnerCli.ActionManagement;
+global using YamlActionRunnerCli.ActionManagement.Actions;
+global using YamlActionRunnerCli.Exceptions;
+global using YamlActionRunnerCli.Exceptions.ActionExceptions;
+global using YamlActionRunnerCli.Exceptions.GeneralExceptions;
+global using YamlActionRunnerCli.InstructionsParsing.YamlInstructionsParsing;
+global using YamlActionRunnerCli.Utils.DataObjects.Instructions;
+global using YamlActionRunnerCli.Utils.DataObjects.Run;
+global using YamlActionRunnerCli.Utils.ObjectManagement;
+global using YamlActionRunnerCli.Cli;
+global using YamlActionRunnerCli.Cli.Commands;
+global using YamlActionRunnerCli.CommandsRunners;
+global using YamlActionRunnerCli.InstructionsRunning;
+global using YamlActionRunnerCli.InstructionsRunning.Run;
+global using YamlActionRunnerCli.Utils.Logging;
+// global using YamlActionRunnerCli.Interfaces;
+global using System.Diagnostics;
+global using Moq.Protected;
+global using Serilog.Events;
+global using Serilog.Sinks.TestCorrelator;
