@@ -6,9 +6,9 @@ namespace YamlActionRunnerCli.Utils.Logging;
 /// <summary>
 /// Utility class that manages a Serilog logger instance for the application.
 /// </summary>
-public class LoggerManager
+public class LoggerManager :  ILoggerManager
 { 
-    private static readonly Lazy<LoggerManager> _instance = new(() => new LoggerManager());
+    private static readonly Lazy<LoggerManager> _instance = new(new LoggerManager());
     
     /// <summary>
     /// Gets the singleton instance of the LoggerManager.
@@ -18,12 +18,12 @@ public class LoggerManager
     /// <summary>
     /// Serilog logger instance.
     /// </summary>
-    public ILogger Logger { get;}
+    public ILogger Logger { get; }
     
     /// <summary>
     /// GSwitch to dynamically change the log level.
     /// </summary>
-    public LoggingLevelSwitch LevelSwitch { get; set; }
+    public LoggingLevelSwitch LevelSwitch { get; }
     
     
     /// <summary>
