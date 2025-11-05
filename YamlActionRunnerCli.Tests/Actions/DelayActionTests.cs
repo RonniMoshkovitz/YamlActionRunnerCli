@@ -1,4 +1,7 @@
-﻿namespace YamlActionRunnerCli.Tests.Actions
+﻿using System.Diagnostics;
+using YamlActionRunnerCli.ActionManagement.Actions;
+
+namespace YamlActionRunnerCli.Tests.Actions
 {
     [TestFixture]
     public class DelayActionTests : ActionTestBase

@@ -1,4 +1,10 @@
-﻿namespace YamlActionRunnerCli.Tests.Actions
+﻿using Moq;
+using Serilog.Sinks.TestCorrelator;
+using YamlActionRunnerCli.ActionManagement.Actions;
+using YamlActionRunnerCli.Utils.DataObjects.Run;
+using YamlActionRunnerCli.Utils.Logging;
+
+namespace YamlActionRunnerCli.Tests.Actions
 {
     /// <summary>
     /// Base class for all action-related tests.

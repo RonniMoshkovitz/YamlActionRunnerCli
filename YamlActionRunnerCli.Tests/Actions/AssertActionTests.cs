@@ -1,4 +1,7 @@
-﻿namespace YamlActionRunnerCli.Tests.Actions
+﻿using YamlActionRunnerCli.ActionManagement.Actions;
+using YamlActionRunnerCli.Exceptions.ActionExceptions;
+
+namespace YamlActionRunnerCli.Tests.Actions
 {
     [TestFixture]
     public class AssertActionTests : ActionTestBase
