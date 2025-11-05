@@ -1,0 +1,17 @@
+﻿steps: 
+  - action: setVariable
+    parameters:
+      name: "action"
+      value: "imported"
+  - action: log
+    parameters:
+      message: "file was ${action}, I can also print variables like '${name}' from other file"
+  - action: parallel
+    parameters:
+      steps:
+        - action: delay
+          parameters:
+            duration: 1000
+        - action: printVariable
+          parameters:
+            name: "action"
