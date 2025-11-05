@@ -6,7 +6,7 @@ namespace YamlActionRunnerCli.Utils.Logging;
 /// <summary>
 /// Utility class that manages a Serilog logger instance for the application.
 /// </summary>
-public class LoggerManager :  ILoggerManager
+public class LoggerManager
 { 
     private static readonly Lazy<LoggerManager> _instance = new(new LoggerManager());
     
